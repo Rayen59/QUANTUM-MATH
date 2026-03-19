@@ -1,15 +1,15 @@
 :root {
     --bg: #ffffff;
-    --surface: #f9f9f9;
-    --text: #1a1a1a;
+    --surface: #f8fafc;
+    --text: #0f172a;
     --primary: #2563eb;
-    --border: #e5e7eb;
+    --border: #e2e8f0;
 }
 
 [data-theme="dark"] {
     --bg: #0f172a;
     --surface: #1e293b;
-    --text: #f1f5f9;
+    --text: #f8fafc;
     --primary: #3b82f6;
     --border: #334155;
 }
@@ -17,15 +17,15 @@
 body {
     background: var(--bg);
     color: var(--text);
-    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-family: 'Inter', system-ui, sans-serif;
     margin: 0;
     transition: 0.3s;
 }
 
 .container { max-width: 800px; margin: 0 auto; padding: 20px; }
 
-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border); padding-bottom: 10px; }
-.badge { font-size: 12px; background: var(--primary); color: white; padding: 2px 6px; border-radius: 4px; }
+header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border); padding-bottom: 15px; }
+.badge { font-size: 10px; background: var(--primary); color: white; padding: 2px 8px; border-radius: 20px; vertical-align: middle; }
 
 .user-card, .editor-zone, .post-card {
     background: var(--surface);
@@ -39,23 +39,19 @@ header { display: flex; justify-content: space-between; align-items: center; bor
 
 input, textarea {
     width: 100%; padding: 12px; background: var(--bg); color: var(--text);
-    border: 1px solid var(--border); border-radius: 8px; font-size: 16px;
+    border: 1px solid var(--border); border-radius: 8px; font-size: 16px; outline: none;
 }
 
-textarea { height: 150px; font-family: monospace; }
+textarea { height: 120px; font-family: 'Courier New', monospace; }
 
-.preview-box { background: var(--bg); padding: 15px; border-radius: 8px; border: 1px dashed var(--primary); min-height: 50px; margin-top: 10px; }
+.preview-box { background: var(--bg); padding: 15px; border-radius: 8px; border: 2px dashed var(--border); min-height: 40px; margin-top: 10px; overflow-x: auto; }
 
-.btn { cursor: pointer; padding: 10px 20px; border-radius: 8px; font-weight: bold; border: none; }
+.btn { cursor: pointer; padding: 10px 18px; border-radius: 8px; font-weight: bold; border: none; transition: 0.2s; }
 .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
 .primary-full { background: var(--primary); color: white; flex-grow: 1; }
 
-/* FORUM POSTS */
-.post-card { animation: fadeIn 0.5s ease; }
-.post-header { display: flex; justify-content: space-between; color: var(--primary); font-weight: bold; font-size: 14px; margin-bottom: 10px; }
-.post-content { line-height: 1.6; }
-.post-image img { max-width: 100%; border-radius: 8px; margin-top: 10px; }
-.reply-link { color: var(--primary); cursor: pointer; font-size: 13px; display: block; margin-top: 10px; }
-
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.post-header { display: flex; justify-content: space-between; color: var(--primary); font-weight: bold; margin-bottom: 12px; font-size: 14px; }
+.post-content { line-height: 1.6; font-size: 17px; }
+.post-image img { max-width: 100%; border-radius: 8px; margin-top: 12px; border: 1px solid var(--border); }
+.reply-link { color: var(--primary); cursor: pointer; font-size: 13px; margin-top: 15px; display: block; text-decoration: underline; }
 

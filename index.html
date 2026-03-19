@@ -18,38 +18,39 @@
     <div class="container">
         <header>
             <h1>QUANTUM-MATH <span class="badge">PRO</span></h1>
-            <button class="btn btn-outline" id="themeToggle">🌓 Mode</button>
+            <button class="btn btn-outline" onclick="toggleTheme()">🌓 Toggle Mode</button>
         </header>
 
         <section class="user-card">
-            <p>Identified as: <strong id="displayLabel">Quantum_User</strong></p>
+            <p>Welcome, <strong id="displayLabel">Quantum_User</strong></p>
             <div class="input-group">
-                <input type="text" id="usernameInput" placeholder="New identity...">
+                <input type="text" id="usernameInput" placeholder="Enter new name...">
                 <button class="btn" onclick="updateName()">Update</button>
             </div>
         </section>
 
         <main class="editor-zone">
             <h2>Create Mathematical Post</h2>
-            <textarea id="editor" placeholder="Type your math here... Ex: $E = mc^2$"></textarea>
+            <textarea id="editor" placeholder="Write math here... Example: $E=mc^2$"></textarea>
             
             <div class="action-bar">
                 <input type="file" id="imageInput" accept="image/*" hidden>
-                <button class="btn btn-outline" onclick="document.getElementById('imageInput').click()">📸 Add Image</button>
-                <button class="btn primary-full" id="publishBtn">PUBLISH TO FEED</button>
+                <button class="btn btn-outline" onclick="document.getElementById('imageInput').click()">📸 Image</button>
+                <button class="btn primary-full" onclick="publishPost()">PUBLISH POST</button>
             </div>
 
             <div id="imagePreview" class="img-preview"></div>
             
-            <h3>Live Rendering</h3>
-            <div id="preview" class="preview-box">Preview will appear here...</div>
+            <h3>Live Rendering (Preview)</h3>
+            <div id="preview" class="preview-box">Preview...</div>
         </main>
 
         <section class="forum-feed">
             <h2><span style="color:var(--primary)">#</span> GLOBAL_DISCUSSIONS</h2>
-            <div id="postsContainer">
-                </div>
+            <div id="postsContainer"></div>
         </section>
+        
+        <button class="btn" style="color:red; margin-top:50px; background:none; border:1px solid red;" onclick="localStorage.clear(); location.reload();">Empty Database</button>
     </div>
 
     <script src="script.js"></script>
