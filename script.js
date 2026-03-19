@@ -1,63 +1,80 @@
-// --- INITIALISATION ---
-const body = document.body;
-const themeToggle = document.getElementById('themeToggle');
-const userNameDisplay = document.getElementById('userName');
-const nameInput = document.getElementById('nameInput');
-const saveNameBtn = document.getElementById('saveName');
-const postContent = document.getElementById('postContent');
-const mathPreview = document.getElementById('mathPreview');
-const imageUpload = document.getElementById('imageUpload');
-const imagePreview = document.getElementById('imagePreview');
+const editor = document.getElementById('editor');
+const preview = document.getElementById('preview');
+const postsContainer = document.getElementById('postsContainer');
+const displayLabel = document.getElementById('displayLabel');
 
-// --- GESTION DU THÈME (DARK MODE) ---
-// Charger le thème sauvegardé
-if (localStorage.getItem('theme') === 'dark') {
-    body.setAttribute('data-theme', 'dark');
+// --- 1. CHARGEMENT INITIAL ---
+let posts = JSON.parse(localStorage.getItem('quantum_db')) || [];
+renderPosts();
+
+if(localStorage.getItem('math-theme') === 'dark') document.body.setAttribute('data-theme', 'dark');
+if(localStorage.getItem('math-user')) displayLabel.innerText = localStorage.getItem('math-user');
+
+// --- 2. FONCTIONS UTILISATEUR ---
+function updateName() {
+    const val = document.getElementById('usernameInput').value;
+    if(val) {
+        displayLabel.innerText = val;
+        localStorage.setItem('math-user', val);
+        document.getElementById('usernameInput').value = '';
+    }
 }
 
-themeToggle.addEventListener('click', () => {
-    if (body.hasAttribute('data-theme')) {
-        body.removeAttribute('data-theme');
-        localStorage.setItem('theme', 'light');
-    } else {
-        body.setAttribute('data-theme', 'dark');
-        localStorage.setItem('theme', 'dark');
-    }
+document.getElementById('themeToggle').onclick = () => {
+    const theme = document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    document.body.setAttribute('data-theme', theme);
+    localStorage.setItem('math-theme', theme);
+};
+
+// --- 3. RENDU LATEX LIVE ---
+editor.addEventListener('input', () => {
+    preview.innerHTML = editor.value.replace(/\n/g, '<br>');
+    MathJax.typesetPromise([preview]);
 });
 
-// --- GESTION DE L'UTILISATEUR (PSEUDO) ---
-// Charger le nom sauvegardé
-const savedName = localStorage.getItem('quantum_username');
-if (savedName) userNameDisplay.innerText = savedName;
+// --- 4. PUBLICATION ---
+document.getElementById('publishBtn').onclick = () => {
+    const text = editor.value;
+    if(!text) return;
 
-saveNameBtn.addEventListener('click', () => {
-    const newName = nameInput.value;
-    if (newName) {
-        localStorage.setItem('quantum_username', newName);
-        userNameDisplay.innerText = newName;
-        nameInput.value = '';
-    }
-});
-
-// --- GESTION DU LIVE PREVIEW (LATEX) ---
-postContent.addEventListener('input', () => {
-    // 1. Mettre le texte dans la zone de preview
-    const text = postContent.value;
-    mathPreview.innerText = text;
+    const img = document.querySelector('#imagePreview img') ? document.querySelector('#imagePreview img').src : null;
     
-    // 2. Demander à MathJax de transformer le texte en rendu mathématique
-    MathJax.typesetPromise([mathPreview]).catch((err) => console.log('MathJax error:', err));
-});
+    const newPost = {
+        author: displayLabel.innerText,
+        content: text,
+        image: img,
+        time: new Date().toLocaleTimeString()
+    };
 
-// --- GESTION DE L'IMAGE (PREVIEW LOCALE) ---
-imageUpload.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = (readerEvent) => {
-            imagePreview.innerHTML = `<img src="${readerEvent.target.result}" alt="Uploaded image preview">`;
-        };
-        reader.readAsDataURL(file);
-    }
-});
+    posts.unshift(newPost);
+    localStorage.setItem('quantum_db', JSON.stringify(posts));
+    
+    editor.value = '';
+    document.getElementById('imagePreview').innerHTML = '';
+    renderPosts();
+};
+
+function renderPosts() {
+    postsContainer.innerHTML = posts.map((p, index) => `
+        <div class="post-card">
+            <div class="post-header"><span>@${p.author}</span> <span>${p.time}</span></div>
+            <div class="post-content">${p.content.replace(/\n/g, '<br>')}</div>
+            ${p.image ? `<div class="post-image"><img src="${p.image}"></div>` : ''}
+            <span class="reply-link" onclick="reply('${p.author}')">⮑ Reply to this theorem</span>
+        </div>
+    `).join('');
+    MathJax.typesetPromise([postsContainer]);
+}
+
+function reply(name) {
+    editor.value = `@${name} Regarding your proof: \n` + editor.value;
+    editor.focus();
+}
+
+// Gestion Image Preview
+document.getElementById('imageInput').onchange = function(e) {
+    const reader = new FileReader();
+    reader.onload = (ev) => document.getElementById('imagePreview').innerHTML = `<img src="${ev.target.result}" style="width:100px;margin-top:10px;border-radius:5px;">`;
+    reader.readAsDataURL(e.target.files[0]);
+};
 
