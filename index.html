@@ -4,56 +4,79 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QUANTUM-MATH | Global Forum</title>
-    <link rel="stylesheet" href="style.css">
     
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>
-        window.MathJax = {
-            tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
-            svg: { fontCache: 'global' }
-        };
+        window.MathJax = { tex: { inlineMath: [['$', '$']] } };
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+
+    <style>
+        :root { --bg: #ffffff; --text: #1a1a1a; --primary: #2563eb; --border: #e2e8f0; }
+        [data-theme="dark"] { --bg: #0f172a; --text: #f8fafc; --primary: #3b82f6; --border: #334155; }
+        body { background: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; padding: 20px; transition: 0.3s; }
+        .container { max-width: 600px; margin: auto; }
+        .card { background: rgba(0,0,0,0.03); padding: 15px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 20px; }
+        textarea { width: 100%; height: 100px; margin: 10px 0; border-radius: 5px; border: 1px solid var(--border); background: var(--bg); color: var(--text); }
+        .btn { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; width: 100%; font-weight: bold; }
+        .post { border-bottom: 1px solid var(--border); padding: 15px 0; }
+        .post-author { color: var(--primary); font-weight: bold; font-size: 0.9em; }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>QUANTUM-MATH <span class="badge">PRO</span></h1>
-            <button class="btn btn-outline" onclick="toggleTheme()">🌓 Toggle Mode</button>
-        </header>
 
-        <section class="user-card">
-            <p>Welcome, <strong id="displayLabel">Quantum_User</strong></p>
-            <div class="input-group">
-                <input type="text" id="usernameInput" placeholder="Enter new name...">
-                <button class="btn" onclick="updateName()">Update</button>
-            </div>
-        </section>
+<div class="container">
+    <header style="display:flex; justify-content:space-between">
+        <h1>QUANTUM-MATH</h1>
+        <button onclick="document.body.toggleAttribute('data-theme')">🌓 Theme</button>
+    </header>
 
-        <main class="editor-zone">
-            <h2>Create Mathematical Post</h2>
-            <textarea id="editor" placeholder="Write math here... Example: $E=mc^2$"></textarea>
-            
-            <div class="action-bar">
-                <input type="file" id="imageInput" accept="image/*" hidden>
-                <button class="btn btn-outline" onclick="document.getElementById('imageInput').click()">📸 Image</button>
-                <button class="btn primary-full" onclick="publishPost()">PUBLISH POST</button>
-            </div>
-
-            <div id="imagePreview" class="img-preview"></div>
-            
-            <h3>Live Rendering (Preview)</h3>
-            <div id="preview" class="preview-box">Preview...</div>
-        </main>
-
-        <section class="forum-feed">
-            <h2><span style="color:var(--primary)">#</span> GLOBAL_DISCUSSIONS</h2>
-            <div id="postsContainer"></div>
-        </section>
-        
-        <button class="btn" style="color:red; margin-top:50px; background:none; border:1px solid red;" onclick="localStorage.clear(); location.reload();">Empty Database</button>
+    <div class="card">
+        <input type="text" id="user" placeholder="Your Name" style="width:90%; padding:5px;">
+        <textarea id="msg" placeholder="Write math... Ex: $x^2 + y^2 = z^2$"></textarea>
+        <button class="btn" onclick="send()">PUBLISH POST</button>
     </div>
 
-    <script src="script.js"></script>
+    <div id="feed"></div>
+</div>
+
+<script>
+    const feed = document.getElementById('feed');
+    const msg = document.getElementById('msg');
+    const user = document.getElementById('user');
+
+    // Charger les messages
+    let data = JSON.parse(localStorage.getItem('q_posts')) || [];
+    display();
+
+    function send() {
+        if(!msg.value) return;
+        const newPost = {
+            name: user.value || "Guest",
+            content: msg.value,
+            date: new Date().toLocaleTimeString()
+        };
+        data.unshift(newPost);
+        localStorage.setItem('q_posts', JSON.stringify(data));
+        msg.value = "";
+        display();
+    }
+
+    function display() {
+        feed.innerHTML = data.map(p => `
+            <div class="post">
+                <div class="post-author">@${p.name} - ${p.date}</div>
+                <div>${p.content.replace(/\n/g, '<br>')}</div>
+            </div>
+        `).join('');
+        
+        // Forcer la conversion LaTeX
+        if(window.MathJax) {
+            MathJax.typeset();
+        }
+    }
+</script>
+
 </body>
 </html>
 
