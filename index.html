@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QUANTUM-MATH | Advanced Discussion Forum</title>
+    
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+
+    <style>
+        :root {
+            --bg: #ffffff;
+            --surface: #f8f9fa;
+            --text: #1a1a1a;
+            --primary: #2563eb;
+            --border: #dee2e6;
+        }
+
+        [data-theme="dark"] {
+            --bg: #0f172a;
+            --surface: #1e293b;
+            --text: #f8f9fa;
+            --primary: #3b82f6;
+            --border: #334155;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', system-ui, sans-serif;
+            margin: 0;
+            transition: 0.3s;
+        }
+
+        .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .user-card {
+            background: var(--surface);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 1px solid var(--border);
+        }
+
+        .input-group { display: flex; gap: 10px; margin-top: 10px; }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            background: var(--bg);
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        textarea { height: 200px; font-family: 'Courier New', monospace; }
+
+        .preview-section {
+            background: var(--surface);
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 20px;
+            border-left: 5px solid var(--primary);
+            min-height: 100px;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .img-preview img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1 style="letter-spacing: -1px;">QUANTUM-MATH <span style="color:var(--primary)">CORE</span></h1>
+        <button class="btn btn-outline" onclick="toggleTheme()">🌓 Switch Mode</button>
+    </header>
+
+    <section class="user-card">
+        <h3>User Profile</h3>
+        <p>Current Identity: <strong id="displayLabel">Guest_User</strong></p>
+        <div class="input-group">
+            <input type="text" id="usernameInput" placeholder="Change your name...">
+            <button class="btn" onclick="updateName()">Update</button>
+        </div>
+    </section>
+
+    <main>
+        <h2>Create Mathematical Entry</h2>
+        <textarea id="editor" placeholder="Write in LaTeX... Example: The area is $A = \pi r^2$"></textarea>
+        
+        <div class="input-group" style="margin: 15px 0;">
+            <input type="file" id="imageInput" accept="image/*" style="display: none;">
+            <button class="btn btn-outline" onclick="document.getElementById('imageInput').click()">📸 Add Image</button>
+        </div>
+
+        <h3>Real-Time Render</h3>
+        <div class="preview-section" id="preview">
+            Your mathematical proof will appear here...
+        </div>
+        <div id="imagePreview" class="img-preview"></div>
+
+        <button class="btn" style="width: 100%; margin-top: 30px; font-size: 18px;">PUBLISH TO GLOBAL FORUM</button>
+    </main>
+</div>
+
+<script>
+    const editor = document.getElementById('editor');
+    const preview = document.getElementById('preview');
+    const imageInput = document.getElementById('imageInput');
+    const imagePreview = document.getElementById('imagePreview');
+
+    // 1. Theme Management
+    function toggleTheme() {
+        const theme = document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        document.body.setAttribute('data-theme', theme);
+        localStorage.setItem('math-theme', theme);
+    }
+    if(localStorage.getItem('math-theme') === 'dark') document.body.setAttribute('data-theme', 'dark');
+
+    // 2. User Management
+    function updateName() {
+        const name = document.getElementById('usernameInput').value;
+        if(name) {
+            document.getElementById('displayLabel').innerText = name;
+            localStorage.setItem('math-username', name);
+        }
+    }
+    if(localStorage.getItem('math-username')) {
+        document.getElementById('displayLabel').innerText = localStorage.getItem('math-username');
+    }
+
+    // 3. LaTeX Live Rendering
+    editor.addEventListener('input', () => {
+        preview.innerHTML = editor.value.replace(/\n/g, '<br>');
+        MathJax.typesetPromise([preview]);
+    });
+
+    // 4. Image Preview
+    imageInput.addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                imagePreview.innerHTML = `<img src="${e.target.result}">`;
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+
+</body>
+</html>
+

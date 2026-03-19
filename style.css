@@ -1,0 +1,72 @@
+:root {
+    --bg-color: #ffffff;
+    --text-color: #000000;
+    --secondary-bg: #f9f9f9;
+    --border-color: #e0e0e0;
+    --primary-color: #1e88e5; /* Bleu pro */
+    --hover-color: #1565c0;
+}
+
+[data-theme="dark"] {
+    --bg-color: #121212;
+    --text-color: #e0e0e0;
+    --secondary-bg: #1e1e1e;
+    --border-color: #333333;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.container { max-width: 900px; margin: auto; padding: 20px; }
+
+header {
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 2px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px;
+}
+
+h1 { color: var(--primary-color); }
+.sub { font-size: 14px; color: #aaa; text-transform: uppercase; }
+
+#themeToggle {
+    background: var(--secondary-bg); color: var(--text-color);
+    border: 1px solid var(--border-color); padding: 8px 15px; cursor: pointer;
+}
+
+.user-section { margin-bottom: 30px; text-align: center; }
+#userName { font-weight: bold; color: var(--primary-color); }
+
+.name-controls { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px;}
+
+input[type="text"], textarea {
+    background: var(--bg-color); color: var(--text-color);
+    border: 1px solid var(--border-color); padding: 10px; width: 80%;
+}
+
+textarea { height: 150px; font-family: monospace; }
+
+.editor { background: var(--secondary-bg); padding: 20px; border-radius: 8px; margin-bottom: 30px;}
+
+.custom-file-upload {
+    border: 1px solid var(--border-color); display: inline-block;
+    padding: 6px 12px; cursor: pointer; background: var(--bg-color);
+}
+input[type="file"] { display: none; }
+
+.preview-area { margin-top: 20px; }
+.preview-box, .image-preview-box {
+    border: 2px dashed var(--border-color); padding: 15px; min-height: 50px; background: var(--bg-color); margin-top: 10px;
+}
+.preview-box { overflow-x: auto; font-family: 'Times New Roman', Times, serif; } /* Style Latex */
+.image-preview-box img { max-width: 100%; height: auto; margin-top: 10px; }
+
+.primary-btn {
+    background: var(--primary-color); color: white; border: none;
+    padding: 12px 20px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 20px;
+}
+.primary-btn:hover { background: var(--hover-color); }
+
